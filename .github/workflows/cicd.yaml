@@ -35,14 +35,15 @@ jobs:
       - name: Instalar terraform
         uses: hashicorp/setup-terraform@v3
       
-      - name: Get Azure CLI
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
       # e. Inicializar
       - name: terraform init
         run: terraform init
+        env:
+          ARM_CLIENT_ID:        ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET:    ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID:  ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID:        ${{ secrets.ARM_TENANT_ID }}
+          TF_VAR_vm_password:   ${{ secrets.TF_VAR_admin_passwd }}
 
   test:
     needs: [build]
@@ -84,6 +85,7 @@ jobs:
           ARM_CLIENT_SECRET:    ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID:  ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID:        ${{ secrets.ARM_TENANT_ID }}
+          TF_VAR_vm_password:   ${{ secrets.TF_VAR_admin_passwd }}
       
       # g. Aplicar
       - name: terraform apply
@@ -93,3 +95,4 @@ jobs:
           ARM_CLIENT_SECRET:    ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID:  ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID:        ${{ secrets.ARM_TENANT_ID }}
+          TF_VAR_vm_password:   ${{ secrets.TF_VAR_admin_passwd }}
