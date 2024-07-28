@@ -35,13 +35,10 @@ jobs:
       - name: Instalar terraform
         uses: hashicorp/setup-terraform@v3
       
-      - name: Azure login
-        uses: azure/login@v2
-        env:
-          ARM_CLIENT_ID:        ${{ secrets.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET:    ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID:  ${{ secrets.ARM_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID:        ${{ secrets.ARM_TENANT_ID }}
+      - name: Get Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # e. Inicializar
       - name: terraform init
