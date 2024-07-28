@@ -2,7 +2,8 @@ name: Deploy Infrastructure
 
 on:
   push:
-    branches: all
+    branches: 
+      - main
 
 # Crie um arquivo de workflow do GitHub Actions que:
 # Faça checkout do repositório.
