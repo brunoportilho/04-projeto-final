@@ -26,6 +26,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
     steps:
       # a. Baixar o repositório
       - name: Clone Repo
@@ -51,6 +54,9 @@ jobs:
   test:
     needs: [build]
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
     steps:
       # c. Formatadores e Linters
       - name: terraform fmt
@@ -62,6 +68,9 @@ jobs:
   security:
     needs: [build]
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
     steps:
       # d. Testes de segurança
       - name: Testing code with Checkov
@@ -79,6 +88,9 @@ jobs:
   terraform:
     needs: [build,test,security]
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
     steps:
       # f. Planejar
       - name: terraform plan
