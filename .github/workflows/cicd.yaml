@@ -35,6 +35,9 @@ jobs:
       - name: Instalar terraform
         uses: hashicorp/setup-terraform@v3
       
+      - name: Install ansible
+        run: sudo apt-get update && sudo apt-get install -y ansible sshpass
+      
       # e. Inicializar
       - name: terraform init
         run: terraform init
