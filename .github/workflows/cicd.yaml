@@ -1,0 +1,89 @@
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches: all
+
+# Crie um arquivo de workflow do GitHub Actions que:
+# Faça checkout do repositório.
+# Instale e configure o Terraform.
+# Execute os comandos de formatação e linting do Terraform (terraform fmt, TFLint).
+# Execute as verificações de segurança com Checkov (a opção soft_fail pode ser usada).
+# Inicialize e aplique os planos do Terraform.
+# Instale o Ansible.
+# Execute o playbook do Ansible para configurar a VM.
+
+# Adicionar os seguintes jobs:
+# a. Baixar o repositório
+# b. Configurar o Terraform
+# c. Formatadores e Linters
+# d. Testes de segurança
+# e. Inicializar
+# f. Planejar
+# g. Aplicar
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # a. Baixar o repositório
+      - name: Clone Repo
+        uses: actions/checkout@v4
+      
+      # b. Configurar o Terraform
+      - name: Instalar terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # e. Inicializar
+      - name: terraform init
+        run: terraform init
+
+  test:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      # c. Formatadores e Linters
+      - name: terraform fmt
+        run: terraform fmt -check -diff
+
+      - name: terraform lint
+        uses: terraform-linters/setup-tflint@v1
+  
+  security:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      # d. Testes de segurança
+      - name: Testing code with Checkov
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          framework: terraform
+          soft_fail: true
+
+      - name: tfsec
+        uses: aquasecurity/tfsec-action@v1.0.0
+        with:
+          soft_fail: true
+
+  terraform:
+    needs: [build,test,security]
+    runs-on: ubuntu-latest
+    steps:
+      # f. Planejar
+      - name: terraform plan
+        uses: hashicorp/terraform-github-actions/init@v0.4.0
+        env:
+          ARM_CLIENT_ID:        ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET:    ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID:  ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID:        ${{ secrets.ARM_TENANT_ID }}
+      
+      # g. Aplicar
+      - name: terraform apply
+        uses: hashicorp/terraform-github-actions/init@v0.4.0
+        env:
+          ARM_CLIENT_ID:        ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET:    ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID:  ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID:        ${{ secrets.ARM_TENANT_ID }}
