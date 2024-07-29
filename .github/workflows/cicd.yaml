@@ -101,7 +101,7 @@ jobs:
 
       # testing command
       - name: cat inventory
-        run: tree ../../ansible/inventory.ini
+        run: tree .
       
       # run ansible playbook
       - name: run ansible playbook
