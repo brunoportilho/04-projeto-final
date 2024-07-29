@@ -15,3 +15,5 @@ variable "username" {
   description = "O usuario que vai ser usado pra acessar a VM."
   default     = "azureuser"
 }
+
+variable "admin_passwd" {}
