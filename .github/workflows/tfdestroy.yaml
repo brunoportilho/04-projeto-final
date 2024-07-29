@@ -6,40 +6,40 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: 'Terraform Action to Perform'
+        description: "Terraform Action to Perform"
         type: choice
         options:
-        - Terraform_destroy
-jobs:        
+          - Terraform_destroy
+jobs:
   terraform_destroy:
-      name: "Terraform_destroy"
-      if: ${{ github.event.inputs.action == 'Terraform_destroy' }}
-      runs-on: ubuntu-latest
-      defaults:
-        run:
-          working-directory: ${{ github.event.inputs.resource }}
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v2
+    name: "Terraform_destroy"
+    if: ${{ github.event.inputs.action == 'Terraform_destroy' }}
+    runs-on: ubuntu-latest
 
-        - name: Setup Terraform
-          uses: hashicorp/setup-terraform@v1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-        - name: Terraform Init
-          id: init
-          run: terraform init
-          env:
-            ARM_CLIENT_ID:        ${{ secrets.ARM_CLIENT_ID }}
-            ARM_CLIENT_SECRET:    ${{ secrets.ARM_CLIENT_SECRET }}
-            ARM_SUBSCRIPTION_ID:  ${{ secrets.ARM_SUBSCRIPTION_ID }}
-            ARM_TENANT_ID:        ${{ secrets.ARM_TENANT_ID }}
-        
-        - name: Terraform Destroy
-          id: destroy
-          working-directory: ${{ github.event.inputs.resource }}
-          run: terraform destroy -auto-approve -var-file=variables.tfvars
-          env:
-            ARM_CLIENT_ID:        ${{ secrets.ARM_CLIENT_ID }}
-            ARM_CLIENT_SECRET:    ${{ secrets.ARM_CLIENT_SECRET }}
-            ARM_SUBSCRIPTION_ID:  ${{ secrets.ARM_SUBSCRIPTION_ID }}
-            ARM_TENANT_ID:        ${{ secrets.ARM_TENANT_ID }}
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          TF_VAR_admin_passwd: ${{ secrets.TF_VAR_admin_passwd }}
+
+      - name: Terraform Destroy
+        id: destroy
+        working-directory: ${{ github.event.inputs.resource }}
+        run: terraform destroy -auto-approve
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          TF_VAR_admin_passwd: ${{ secrets.TF_VAR_admin_passwd }}

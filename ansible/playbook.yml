@@ -1,0 +1,23 @@
+
+# Grupo web terá o pacote nginx instalado e seu serviço habilitado e inicializado.
+# Grupo db terá o pacote postgres instalado e seu serviço hablitado e inicializado.
+# Todos os grupos terá um usuário chamado acmeuser, com seu diretório home criado,
+#     e senha aulapuc1234
+# Grupo web terá um arquivo chamado index.html  
+#     dentro do diretório /var/www/html/ e o conteúdo do arquivo é o valor da variável 
+#     ansible_hostname, o mode do arquivo é 0644, o owner é root e o group é root.
+---
+- name: update cache
+  hosts: all
+  gather_facts: true
+  become: yes
+  tasks:
+    - name: atualiza cache
+      apt: update_cache=yes
+        
+- name: install nginx
+  hosts: web
+  gather_facts: true
+  become: yes
+  roles:
+    - web

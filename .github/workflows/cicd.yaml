@@ -96,5 +96,13 @@ jobs:
           TF_VAR_admin_passwd:  ${{ secrets.TF_VAR_admin_passwd }}
             
       # Instalar Ansible
-      - name: Install ansible
+      - name: install ansible
         run: sudo apt-get update && sudo apt-get install -y ansible sshpass
+
+      # testing command
+      - name: cat inventory
+        run: cat ../../ansible/inventory.ini
+      
+      # run ansible playbook
+      - name: run ansible playbook
+        run: ansible-playbook -i ../../ansible/inventory.ini ../../ansible/playbook.yml
