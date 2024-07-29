@@ -75,7 +75,7 @@ jobs:
 
       # f. Planejar
       - name: terraform plan
-        uses: hashicorp/terraform-github-actions/init@v0.4.0
+        run: terraform plan
         env:
           ARM_CLIENT_ID:        ${{ secrets.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET:    ${{ secrets.ARM_CLIENT_SECRET }}
@@ -83,7 +83,8 @@ jobs:
           ARM_TENANT_ID:        ${{ secrets.ARM_TENANT_ID }}
       
       # g. Aplicar
-      - name: terraform apply
+      - name: terraform apply if it's main
+        if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve
         env:
           ARM_CLIENT_ID:        ${{ secrets.ARM_CLIENT_ID }}
