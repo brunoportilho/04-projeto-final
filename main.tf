@@ -129,7 +129,7 @@ resource "azurerm_linux_virtual_machine" "student-vm" {
     offer     = "0001-com-ubuntu-server-jammy"
     sku       = "22_04-lts-gen2"
     version   = "latest"
-  } 
+  }
   admin_ssh_key {
     username   = var.username
     public_key = azapi_resource_action.ssh_public_key_gen.output.publicKey
