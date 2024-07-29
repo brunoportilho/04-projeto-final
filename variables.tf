@@ -16,4 +16,4 @@ variable "username" {
   default     = "azureuser"
 }
 
-variable "admin_passwd" {}
+# variable "admin_passwd" {}
