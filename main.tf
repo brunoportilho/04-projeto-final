@@ -113,7 +113,7 @@ resource "azurerm_linux_virtual_machine" "student-vm" {
   name                            = "student-vm"
   location                        = azurerm_resource_group.student-rg.location
   resource_group_name             = azurerm_resource_group.student-rg.name
-  network_interface_ids           = [azurerm_network_interface.student-nic]
+  network_interface_ids           = [azurerm_network_interface.student-nic.id]
   disable_password_authentication = false
   size                            = "Standard_B1s"
   computer_name                   = "student-vm"
