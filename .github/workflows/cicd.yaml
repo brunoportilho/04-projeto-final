@@ -103,6 +103,10 @@ jobs:
       - name: cat inventory
         run: tree .
       
+      # testing command
+      - name: cat inventory
+        run: pwd
+      
       # run ansible playbook
       - name: run ansible playbook
-        run: ansible-playbook -i ../../ansible/inventory.ini ../../ansible/playbook.yml
+        run: ansible-playbook -i ../../../ansible/inventory.ini ../../../ansible/playbook.yml
