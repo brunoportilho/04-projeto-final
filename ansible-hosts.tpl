@@ -1,5 +1,5 @@
 [web]
-${vm}
+${web}
 
 [all:vars]
 ansible_user=${username}
