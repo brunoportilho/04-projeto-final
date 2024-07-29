@@ -17,6 +17,5 @@ variable "username" {
 }
 
 variable "admin_passwd" {
-  type      = string
-  sensitive = true
+    type = string
 }
