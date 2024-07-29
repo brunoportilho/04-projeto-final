@@ -136,7 +136,7 @@ resource "azurerm_linux_virtual_machine" "student-vm" {
 resource "local_file" "hosts_cfg" {
   content = templatefile("ansible-hosts.tpl",
     {
-      web      = azurerm_linux_virtual_machine.student-vm.public_ip_address
+      web      = azurerm_linux_virtual_machine.student-vm.public_ip_address,
       username = var.username
     }
   )
