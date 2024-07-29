@@ -97,16 +97,20 @@ jobs:
             
       # Instalar Ansible
       - name: install ansible
-        run: sudo apt-get update && sudo apt-get install -y ansible sshpass
+        run: sudo apt-get update && sudo apt-get install -y ansible
 
-      # testing command
-      - name: cat inventory
+      # testing command tree
+      - name: tree
         run: tree .
       
-      # testing command
-      - name: cat inventory
+      # testing command pwd
+      - name: path
         run: pwd
+
+      # testing command cat
+      - name: cat inventory.ini
+        run: ./ansible/inventory.ini
       
       # run ansible playbook
       - name: run ansible playbook
-        run: ansible-playbook -i ../../../ansible/inventory.ini ../../../ansible/playbook.yml
+        run: ansible-playbook -i ./ansible/inventory.ini ./ansible/playbook.yml
