@@ -103,9 +103,9 @@ resource "azapi_resource" "ssh_public_key" {
 }
 
 resource "local_file" "private_key" {
-  content  = azapi_resource_action.ssh_public_key_gen.output.privateKey
+  content         = azapi_resource_action.ssh_public_key_gen.output.privateKey
   file_permission = 0600
-  filename = "private_key.pem"
+  filename        = "private_key.pem"
 }
 
 # Cria VM
