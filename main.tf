@@ -71,50 +71,39 @@ resource "azurerm_network_interface" "student-nic" {
     name                          = "student-nic"
     subnet_id                     = azurerm_subnet.student-subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.student-pip.id
+    public_ip_address_id          = azurerm_public_ip.student-pip.id
   }
 }
 
 # Cria VM
 resource "azurerm_linux_virtual_machine" "student-vm" {
-  name                  = "student-vm"
-  location              = azurerm_resource_group.student-rg.location
-  resource_group_name   = azurerm_resource_group.student-rg.name
-  network_interface_ids = [azurerm_network_interface.student-nic]
-  size                  = "Standard_B1s"
-  computer_name         = "student-vm"
-  admin_username        = var.username
-  admin_password        = var.admin_passwd
-  
+  name                            = "student-vm"
+  location                        = azurerm_resource_group.student-rg.location
+  resource_group_name             = azurerm_resource_group.student-rg.name
+  network_interface_ids           = [azurerm_network_interface.student-nic]
+  disable_password_authentication = false
+  size                            = "Standard_B1s"
+  computer_name                   = "student-vm"
+  admin_username                  = var.username
+  admin_password                  = var.admin_passwd
   os_disk {
     name                 = "student-vm-OsDisk"
     caching              = "ReadWrite"
     storage_account_type = "StandardSSD_LRS"
   }
-
   source_image_reference {
     publisher = "Canonical"
     offer     = "0001-com-ubuntu-server-jammy"
     sku       = "22_04-lts-gen2"
     version   = "latest"
   }
-
-#   admin_ssh_key {
-#     username   = var.username
-#     public_key = azapi_resource_action.ssh_public_key_gen.output.publicKey
-#   }
-
-  # boot_diagnostics {
-  #   storage_account_uri = azurerm_storage_account.storage_account.primary_blob_endpoint
-  # }
 }
 
 # Gerar arquivo de inventário do Ansible
-# ainda chumbado
 resource "local_file" "hosts_cfg" {
   content = templatefile("./ansible-hosts.tpl",
     {
-      web = azurerm_linux_virtual_machine.student-vm.public_ip_address
+      web      = azurerm_linux_virtual_machine.student-vm.public_ip_address
       username = var.username
     }
   )
