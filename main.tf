@@ -102,7 +102,7 @@ resource "azapi_resource" "ssh_public_key" {
   parent_id = azurerm_resource_group.student-rg.id
 }
 
-resource "local_file" "private_key" {
+resource "local_sensitive_file" "private_key" {
   content         = azapi_resource_action.ssh_public_key_gen.output.privateKey
   file_permission = 0600
   filename        = "private_key.pem"
