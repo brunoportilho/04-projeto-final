@@ -29,17 +29,17 @@ resource "azurerm_network_security_group" "student-nsg" {
   resource_group_name = azurerm_resource_group.student-rg.name
   location            = azurerm_resource_group.student-rg.location
 
-  # security_rule {
-  #   name                       = "student-nsg"
-  #   priority                   = 100
-  #   direction                  = "Inbound"
-  #   access                     = "Allow"
-  #   protocol                   = "Tcp"
-  #   source_port_range          = "*"
-  #   destination_port_range     = "22"
-  #   source_address_prefix      = "*"
-  #   destination_address_prefix = "*"
-  # }
+  security_rule {
+    name                       = "student-nsg"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
 
   security_rule {
     name                       = "HTTP"
@@ -59,7 +59,7 @@ resource "azurerm_public_ip" "student-pip" {
   name                = "student-pip"
   location            = azurerm_resource_group.student-rg.location
   resource_group_name = azurerm_resource_group.student-rg.name
-  allocation_method   = "Static"
+  allocation_method   = "Dynamic"
 }
 
 # Create network interface
@@ -67,12 +67,45 @@ resource "azurerm_network_interface" "student-nic" {
   name                = "student-nic"
   location            = azurerm_resource_group.student-rg.location
   resource_group_name = azurerm_resource_group.student-rg.name
+
   ip_configuration {
     name                          = "student-nic"
     subnet_id                     = azurerm_subnet.student-subnet.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.student-pip.id
   }
+}
+
+# Connect the security group to the network interface
+resource "azurerm_network_interface_security_group_association" "student-nsg-nic" {
+  network_interface_id      = azurerm_network_interface.student-nic.id
+  network_security_group_id = azurerm_network_security_group.student-nsg.id
+}
+
+resource "random_pet" "ssh_key_name" {
+  prefix    = "ssh"
+  separator = ""
+}
+
+resource "azapi_resource_action" "ssh_public_key_gen" {
+  type                   = "Microsoft.Compute/sshPublicKeys@2022-11-01"
+  resource_id            = azapi_resource.ssh_public_key.id
+  action                 = "generateKeyPair"
+  method                 = "POST"
+  response_export_values = ["publicKey", "privateKey"]
+}
+
+resource "azapi_resource" "ssh_public_key" {
+  type      = "Microsoft.Compute/sshPublicKeys@2022-11-01"
+  name      = random_pet.ssh_key_name.id
+  location  = azurerm_resource_group.student-rg.location
+  parent_id = azurerm_resource_group.student-rg.id
+}
+
+resource "local_file" "private_key" {
+  content  = azapi_resource_action.ssh_public_key_gen.output.privateKey
+  file_permission = 0600
+  filename = "private_key.pem"
 }
 
 # Cria VM
@@ -101,11 +134,11 @@ resource "azurerm_linux_virtual_machine" "student-vm" {
 
 # Gerar arquivo de inventário do Ansible
 resource "local_file" "hosts_cfg" {
-  content = templatefile("./ansible-hosts.tpl",
+  content = templatefile("ansible-hosts.tpl",
     {
       web      = azurerm_linux_virtual_machine.student-vm.public_ip_address
       username = var.username
     }
   )
-  filename = "./inventory.ini"
+  filename = "./ansible/inventory.ini"
 }

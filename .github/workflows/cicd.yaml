@@ -72,7 +72,6 @@ jobs:
           ARM_CLIENT_SECRET:    ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID:  ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID:        ${{ secrets.ARM_TENANT_ID }}
-          TF_VAR_admin_passwd:  ${{ secrets.TF_VAR_admin_passwd }}
 
       # f. Planejar
       - name: terraform plan
@@ -82,7 +81,6 @@ jobs:
           ARM_CLIENT_SECRET:    ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID:  ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID:        ${{ secrets.ARM_TENANT_ID }}
-          TF_VAR_admin_passwd:  ${{ secrets.TF_VAR_admin_passwd }}
       
       # g. Aplicar
       - name: terraform apply
@@ -92,7 +90,6 @@ jobs:
           ARM_CLIENT_SECRET:    ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID:  ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID:        ${{ secrets.ARM_TENANT_ID }}
-          TF_VAR_admin_passwd:  ${{ secrets.TF_VAR_admin_passwd }}
             
       # Instalar Ansible
       - name: Install ansible
